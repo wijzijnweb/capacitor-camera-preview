@@ -21,7 +21,7 @@
   "main": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
   "files": [
-    "CapgoCameraPreview.podspec",
+    "ExappsCameraPreview.podspec",
     "android/",
     "dist/",
     "ios/"
