@@ -431,8 +431,14 @@ public class CameraPreview: CAPPlugin, CAPBridgedPlugin {
     @objc func startRecordVideo(_ call: CAPPluginCall) {
         DispatchQueue.main.async {
             do {
-                try self.cameraController.captureVideo()
-                call.resolve()
+                try self.cameraController.captureVideo { (fileURL, error) in
+                    if let error = error {
+                        print(error)
+                        call.reject(error.localizedDescription)
+                    } else if let fileURL = fileURL {
+                        call.resolve(["videoUrl": fileURL.absoluteString])
+                    }
+                }
             } catch {
                 call.reject(error.localizedDescription)
             }

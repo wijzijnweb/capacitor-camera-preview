@@ -24,6 +24,7 @@ class CameraController: NSObject {
     var rearCameraInput: AVCaptureDeviceInput?
 
     var fileVideoOutput: AVCaptureMovieFileOutput?
+    var videoRecordCompletionBlock: ((URL?, Error?) -> Void)?
 
     var previewLayer: AVCaptureVideoPreviewLayer?
 
@@ -485,11 +486,14 @@ extension CameraController {
             return
         }
 
-        // Stop recording video
-        fileVideoOutput.stopRecording()
+        self.videoRecordCompletionBlock = completion
 
-        // Return the video file URL in the completion handler
-        completion(self.videoFileURL, nil)
+        // Stop recording video
+        if(self.fileVideoOutput != nil) {
+            self.fileVideoOutput?.stopRecording()
+        } else {
+            completion(nil, CameraControllerError.unknown)
+        }
     }
 }
 
@@ -719,6 +723,7 @@ extension CameraController: AVCaptureFileOutputRecordingDelegate {
             print("Error recording movie: \(error.localizedDescription)")
         } else {
             print("Movie recorded successfully: \(outputFileURL)")
+            self.videoRecordCompletionBlock?(outputFileURL, nil)
             // You can save the file to the library, upload it, etc.
         }
     }
