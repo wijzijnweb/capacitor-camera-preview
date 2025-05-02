@@ -432,7 +432,7 @@ extension CameraController {
 
     }
 
-    func captureVideo() throws {
+     func captureVideo(completion: @escaping (URL?, Error?) -> Void) throws {
         guard let captureSession = self.captureSession, captureSession.isRunning else {
             throw CameraControllerError.captureSessionIsMissing
         }
